@@ -100,8 +100,10 @@ class ArticleListViewModel: ObservableObject {
         
         // 获取用户设置的API Key和总结提示词
         // 实际实现需要从UserSettings获取
-        let apiKey = "YOUR_API_KEY"
-        let summaryPrompt = "请针对以下多篇文章内容，为每一篇都生成包含"主要内容"、"核心观点"、"关键细节"和"深度解读"的结构化总结报告。将所有文章的总结合并为一个统一的文本块输出。"
+        // 替换硬编码值为从Settings获取
+        let settings = Settings.getCurrentSettings(context: viewContext)
+        let apiKey = settings.apiKey ?? ""
+        let summaryPrompt = settings.batchSummaryPrompt ?? DEFAULT_SUMMARY_PROMPT
         
         // 准备文章内容
         var articlesContent = ""

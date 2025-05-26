@@ -3,6 +3,8 @@ import GoogleSignIn
 import GoogleAPIClientForREST_Drive
 
 class GoogleDriveService: ObservableObject {
+    static let shared = GoogleDriveService()
+    
     @Published var isSignedIn = false
     @Published var userEmail: String? = nil
     

@@ -1,19 +1,20 @@
 import SwiftUI
 import CoreData
 
-// --- Start Placeholder Models (Assume these are defined elsewhere globally) ---
-struct Message: Identifiable, Equatable {
-    let id: UUID
-    var content: String
-    let role: MessageRole
-    let createdAt: Date
-}
 
-enum MessageRole: String, Codable {
-    case user
-    case assistant
-    case system
-}
+// --- Start Placeholder Models (Assume these are defined elsewhere globally) ---
+// struct Message: Identifiable, Equatable {
+//     let id: UUID
+//     var content: String
+//     let role: MessageRole
+//     let createdAt: Date
+// }
+
+// enum MessageRole: String, Codable {
+//     case user
+//     case assistant
+//     case system
+// }
 // --- End Placeholder Models ---
 
 struct AIChatView: View {

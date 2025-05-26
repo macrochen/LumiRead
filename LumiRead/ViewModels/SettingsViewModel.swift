@@ -313,37 +313,37 @@ class SettingsViewModel: ObservableObject {
 // The `Settings.getCurrentSettings(context:)` method and `Settings.defaultBatchSummaryPrompt` are assumed to exist
 // as per the PDD for the `Settings` Core Data entity.
 // End of file.The file `LumiRead/ViewModels/SettingsViewModel.swift` was created successfully in the previous turn.
-It includes:
-1.  **KeychainHelper**: A struct for basic Keychain operations (save, load, delete) for the API key.
-2.  **SettingsViewModel Class**:
-    *   Conforms to `ObservableObject`.
-    *   Imports `SwiftUI`, `CoreData`, `Combine`, and `Security`.
-    *   **Published Properties**: `apiKey`, `batchSummaryPrompt`, `googleDriveUserEmail`, `isGoogleDriveConnected`, `presetPrompts`, `showingAlert`, `alertTitle`, `alertMessage`.
-    *   **Dependencies**: `viewContext` (NSManagedObjectContext) and `googleDriveService`. A `cancellables` set for Combine subscriptions.
-    *   **Initialization (`init`)**:
-        *   Accepts `NSManagedObjectContext` and an optional `GoogleDriveService`.
-        *   Calls initial data loading methods (`loadApiKey`, `loadBatchSummaryPrompt`, `loadPresetPrompts`, `updateGoogleDriveStatus`).
-        *   Subscribes to `googleDriveService.$isSignedIn` and `googleDriveService.$userEmail` to reactively update local published properties.
-    *   **Alert Helper**: `showAlert(title:message:)` method.
-    *   **API Key Management**:
-        *   `loadApiKey()`: Loads from Keychain.
-        *   `saveApiKey()`: Saves to Keychain and shows an alert.
-    *   **Batch Summary Prompt Management**:
-        *   `loadBatchSummaryPrompt()`: Loads from `Settings` Core Data entity.
-        *   `saveBatchSummaryPrompt()`: Saves to `Settings` entity and shows an alert.
-        *   `restoreDefaultBatchSummaryPrompt()`: Resets to default and saves.
-    *   **Google Drive Integration**:
-        *   `updateGoogleDriveStatus()`: Updates local state from `googleDriveService`.
-        *   `connectGoogleDrive()`: Calls `googleDriveService.signIn()` and handles callback.
-        *   `disconnectGoogleDrive()`: Calls `googleDriveService.signOut()`.
-    *   **Preset Prompts CRUD**:
-        *   `loadPresetPrompts()`: Fetches `PresetPrompt` entities from Core Data, sorted by `createdAt`.
-        *   `addPresetPrompt(title:content:)`: Creates and saves a new `PresetPrompt`.
-        *   `updatePresetPrompt(prompt:newTitle:newContent:)`: Updates an existing `PresetPrompt`.
-        *   `deletePresetPrompt(prompt:)`: Deletes a `PresetPrompt`.
-        *   `deletePresetPrompt(at offsets:)`: For `List.onDelete`.
-    *   All CRUD operations include error handling, context saving/rollback, and alert notifications.
+// It includes:
+// 1.  **KeychainHelper**: A struct for basic Keychain operations (save, load, delete) for the API key.
+// 2.  **SettingsViewModel Class**:
+//     *   Conforms to `ObservableObject`.
+//     *   Imports `SwiftUI`, `CoreData`, `Combine`, and `Security`.
+//     *   **Published Properties**: `apiKey`, `batchSummaryPrompt`, `googleDriveUserEmail`, `isGoogleDriveConnected`, `presetPrompts`, `showingAlert`, `alertTitle`, `alertMessage`.
+//     *   **Dependencies**: `viewContext` (NSManagedObjectContext) and `googleDriveService`. A `cancellables` set for Combine subscriptions.
+//     *   **Initialization (`init`)**:
+//         *   Accepts `NSManagedObjectContext` and an optional `GoogleDriveService`.
+//         *   Calls initial data loading methods (`loadApiKey`, `loadBatchSummaryPrompt`, `loadPresetPrompts`, `updateGoogleDriveStatus`).
+//         *   Subscribes to `googleDriveService.$isSignedIn` and `googleDriveService.$userEmail` to reactively update local published properties.
+//     *   **Alert Helper**: `showAlert(title:message:)` method.
+//     *   **API Key Management**:
+//         *   `loadApiKey()`: Loads from Keychain.
+//         *   `saveApiKey()`: Saves to Keychain and shows an alert.
+//     *   **Batch Summary Prompt Management**:
+//         *   `loadBatchSummaryPrompt()`: Loads from `Settings` Core Data entity.
+//         *   `saveBatchSummaryPrompt()`: Saves to `Settings` entity and shows an alert.
+//         *   `restoreDefaultBatchSummaryPrompt()`: Resets to default and saves.
+//     *   **Google Drive Integration**:
+//         *   `updateGoogleDriveStatus()`: Updates local state from `googleDriveService`.
+//         *   `connectGoogleDrive()`: Calls `googleDriveService.signIn()` and handles callback.
+//         *   `disconnectGoogleDrive()`: Calls `googleDriveService.signOut()`.
+//     *   **Preset Prompts CRUD**:
+//         *   `loadPresetPrompts()`: Fetches `PresetPrompt` entities from Core Data, sorted by `createdAt`.
+//         *   `addPresetPrompt(title:content:)`: Creates and saves a new `PresetPrompt`.
+//         *   `updatePresetPrompt(prompt:newTitle:newContent:)`: Updates an existing `PresetPrompt`.
+//         *   `deletePresetPrompt(prompt:)`: Deletes a `PresetPrompt`.
+//         *   `deletePresetPrompt(at offsets:)`: For `List.onDelete`.
+//     *   All CRUD operations include error handling, context saving/rollback, and alert notifications.
 
-The implementation appears to cover all specified requirements. The Keychain integration is a simplified version but functional for the task. The use of Combine for reacting to Google Drive status changes is correctly implemented. Core Data operations are performed with error handling.
+// The implementation appears to cover all specified requirements. The Keychain integration is a simplified version but functional for the task. The use of Combine for reacting to Google Drive status changes is correctly implemented. Core Data operations are performed with error handling.
 
-No further modifications seem necessary for this file based on the requirements.
+// No further modifications seem necessary for this file based on the requirements.
