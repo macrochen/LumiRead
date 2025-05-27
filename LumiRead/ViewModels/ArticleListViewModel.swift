@@ -10,6 +10,12 @@ class ArticleListViewModel: ObservableObject {
     @Published var alertMessage = ""
     @Published var isLoading = false
     
+    private let viewContext: NSManagedObjectContext
+    
+    init(context: NSManagedObjectContext) {
+        self.viewContext = context
+    }
+    
     // 选择/取消选择文章
     func toggleArticleSelection(articleID: UUID) {
         if selectedArticleIDs.contains(articleID) {
@@ -53,7 +59,8 @@ class ArticleListViewModel: ObservableObject {
     
     // 登录Google Drive
     private func signInToGoogleDrive() {
-        guard let presentingViewController = UIApplication.shared.windows.first?.rootViewController else {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let presentingViewController = windowScene.windows.first?.rootViewController else {
             showAlert(title: "错误", message: "无法获取当前视图控制器。")
             return
         }
@@ -68,19 +75,7 @@ class ArticleListViewModel: ObservableObject {
             self.fetchFilesFromGoogleDrive()
         }
     }
-    
-    // 获取Google Drive文件列表
-    private func fetchFilesFromGoogleDrive() {
-        // 实际实现需要使用GoogleAPIClientForREST_Drive获取文件列表
-        // 然后显示文件选择器让用户选择.json文件
-    }
-    
-    // 下载并解析选定的JSON文件
-    private func downloadAndParseJSONFile(fileID: String) {
-        // 实际实现需要下载文件并解析JSON内容
-        // 然后将文章数据保存到CoreData
-    }
-    
+
     // 批量总结选中的文章
     func summarizeSelectedArticles(articles: FetchedResults<Article>, context: NSManagedObjectContext) {
         guard !selectedArticleIDs.isEmpty else {
@@ -91,18 +86,16 @@ class ArticleListViewModel: ObservableObject {
         isLoading = true
         
         // 获取选中的文章内容
+        // 修改为接收 articles 参数
+        // 获取选中的文章内容
         let selectedArticles = articles.filter { article in
-            if let id = article.id {
-                return selectedArticleIDs.contains(id)
-            }
-            return false
+            guard let id = article.id else { return false }
+            return selectedArticleIDs.contains(id)
         }
         
         // 获取用户设置的API Key和总结提示词
-        // 实际实现需要从UserSettings获取
-        // 替换硬编码值为从Settings获取
         let settings = Settings.getCurrentSettings(context: viewContext)
-        let apiKey = settings.apiKey ?? ""
+        _ = settings.apiKey ?? ""  // 使用 _ 替代未使用的变量
         let summaryPrompt = settings.batchSummaryPrompt ?? DEFAULT_SUMMARY_PROMPT
         
         // 准备文章内容
@@ -112,33 +105,32 @@ class ArticleListViewModel: ObservableObject {
         }
         
         // 调用AI服务进行总结
-        AIService.shared.generateSummary(
-            apiKey: apiKey,
-            prompt: summaryPrompt,
-            content: articlesContent
-        ) { result in
+        AIService.shared.generateBatchSummary(
+            articles: Array(selectedArticles),
+            prompt: summaryPrompt
+        ) { [weak self] result in
+            guard let self = self else { return }
+            
             DispatchQueue.main.async {
                 self.isLoading = false
                 
                 switch result {
                 case .success(let summaryContent):
-                    // 创建新的批量总结记录
-                    let summary = BatchSummary.createBatchSummary(
+                    _ = BatchSummary.createBatchSummary(  // 使用 _ 替代未使用的变量
                         content: summaryContent,
                         articleIDs: Array(self.selectedArticleIDs),
-                        context: context
+                        context: self.viewContext
                     )
                     
                     do {
-                        try context.save()
-                        // 清除选择
+                        try self.viewContext.save()
                         self.selectedArticleIDs.removeAll()
                     } catch {
                         self.showAlert(title: "保存失败", message: "无法保存总结内容: \(error.localizedDescription)")
                     }
                     
                 case .failure(let error):
-                    self.showAlert(title: "总结失败", message: "无法生成文章总结: \(error.localizedDescription)")
+                    self.showAlert(title: "总结失败", message: "无法生成总结: \(error.localizedDescription)")
                 }
             }
         }
@@ -150,4 +142,41 @@ class ArticleListViewModel: ObservableObject {
         alertMessage = message
         showAlert = true
     }
+    
+    // 获取Google Drive文件列表
+    private func fetchFilesFromGoogleDrive() {
+        guard let user = GIDSignIn.sharedInstance.currentUser else {
+            showAlert(title: "错误", message: "未登录Google账户。")
+            return
+        }
+        
+        let driveService = GTLRDriveService()
+        driveService.authorizer = user.fetcherAuthorizer
+        
+        let query = GTLRDriveQuery_FilesList.query()
+        query.fields = "files(id, name, mimeType)"
+        query.q = "mimeType='application/json'"
+        
+        driveService.executeQuery(query) { [weak self] (_, result, error) in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                if let error = error {
+                    self.showAlert(title: "错误", message: "无法获取文件列表：\(error.localizedDescription)")
+                    return
+                }
+                
+                guard let fileList = result as? GTLRDrive_FileList,
+                      let _ = fileList.files else {  // 将 files 替换为 _
+                    self.showAlert(title: "错误", message: "无法解析文件列表。")
+                    return
+                }
+                
+                // 处理文件列表，例如显示文件选择器
+                // TODO: 实现文件选择器UI
+            }
+        }
+    }
+    
+    
 }

@@ -1,6 +1,9 @@
 import Foundation
 
 class AIService {
+    static let shared = AIService()
+    private init() {}
+    
     private var apiKey: String = ""
     
     func setApiKey(_ key: String) {

@@ -3,7 +3,7 @@ import SwiftUI
 struct ArticleListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var appState: AppState
-    @StateObject private var viewModel = ArticleListViewModel()
+    @StateObject private var viewModel = ArticleListViewModel(context: viewContext)
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Article.importDate, ascending: false)],

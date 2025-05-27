@@ -6,6 +6,7 @@ class BatchSummary: NSManagedObject, Identifiable {
     @NSManaged public var id: UUID
     @NSManaged public var content: String
     @NSManaged public var createdAt: Date
+    @NSManaged public var articleIDs: [UUID]?
     @NSManaged public var articles: NSSet?
     
     // 用于预览的示例数据
@@ -29,7 +30,7 @@ extension BatchSummary {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .short
-        return formatter.string(from: creationDate ?? Date())
+        return formatter.string(from: createdAt)
     }
     
     var articleCountString: String {
@@ -41,7 +42,7 @@ extension BatchSummary {
         let summary = BatchSummary(context: context)
         summary.id = UUID()
         summary.content = content
-        summary.creationDate = Date()
+        summary.createdAt = Date()
         summary.articleIDs = articleIDs
         return summary
     }

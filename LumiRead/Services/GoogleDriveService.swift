@@ -26,13 +26,14 @@ class GoogleDriveService: ObservableObject {
     }
     
     private func configureService(with user: GIDGoogleUser) {
-        if let accessToken = user.accessToken {
-            service.authorizer = accessToken.fetcherAuthorizer()
+        if user.accessToken != nil {
+            service.authorizer = user.fetcherAuthorizer
         }
     }
     
     func signIn(completion: @escaping (Bool, Error?) -> Void) {
-        guard let presentingViewController = UIApplication.shared.windows.first?.rootViewController else {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let presentingViewController = windowScene.windows.first?.rootViewController else {
             completion(false, NSError(domain: "GoogleDriveService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法获取根视图控制器"]))
             return
         }

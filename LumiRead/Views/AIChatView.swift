@@ -136,7 +136,7 @@ struct ChatView: View {
                         }
                     }
                     .padding(.vertical)
-                    .onChange(of: viewModel.messages.count) { _ in
+                    .onChange(of: viewModel.messages.count) { oldValue, newValue in
                         if let lastMessageID = viewModel.messages.last?.id {
                             withAnimation {
                                 scrollViewProxy.scrollTo(lastMessageID, anchor: .bottom)
@@ -220,12 +220,12 @@ struct ChatView: View {
 
     private func sendMessageAction() {
         guard !isSendButtonDisabled else { return }
-
+        
         viewModel.sendMessage(
             article: article,
             userInput: userInput,
-            selectedPromptIDs: selectedPromptIDs,
-            context: viewContext
+            selectedPromptIDs: Array(selectedPromptIDs),
+            viewContext: viewContext  // 修改参数名为 viewContext
         )
         userInput = ""
         selectedPromptIDs = []
@@ -243,19 +243,15 @@ struct AIChatView_Previews: PreviewProvider {
         mockArticle.id = UUID()
         mockArticle.title = "这是一个测试文章标题用于预览"
         mockArticle.content = "这是文章的内容..."
-        mockArticle.createdAt = Date()
+        // 修改 mockArticle 的创建
+        mockArticle.createdAt = Date()  // 使用新添加的属性
         mockArticle.summary = "这是文章的摘要..."
         
-        let prompt1 = PresetPrompt(context: viewContext)
-        prompt1.id = UUID()
-        prompt1.title = "总结这篇文章"
-        prompt1.prompt = "请总结一下这篇文章的主要观点。"
+        // 修改 prompt1 和 prompt2 的创建
+        prompt1.prompt = "请总结一下这篇文章的主要观点。"  // 使用 prompt 而不是 content
         prompt1.createdAt = Date()
         
-        let prompt2 = PresetPrompt(context: viewContext)
-        prompt2.id = UUID()
-        prompt2.title = "主要论点是什么？"
-        prompt2.prompt = "这篇文章的主要论点是什么？"
+        prompt2.prompt = "这篇文章的主要论点是什么？"  // 使用 prompt 而不是 content
         prompt2.createdAt = Date()
         
         return Group {
