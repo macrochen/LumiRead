@@ -8,6 +8,8 @@ class Article: NSManagedObject, Identifiable {
     @NSManaged public var link: String
     @NSManaged public var content: String
     @NSManaged public var importDate: Date
+    @NSManaged public var chats: NSSet?
+    @NSManaged public var summaries: NSSet?
     
     // 用于预览的示例数据
     static var preview: Article {
@@ -22,8 +24,18 @@ class Article: NSManagedObject, Identifiable {
     }
 }
 
-// 扩展用于便捷属性和方法
+// 扩展用于获取关联的聊天和总结
 extension Article {
+    var chatArray: [Chat] {
+        let set = chats as? Set<Chat> ?? []
+        return set.sorted { $0.createdAt > $1.createdAt }
+    }
+    
+    var summaryArray: [BatchSummary] {
+        let set = summaries as? Set<BatchSummary> ?? []
+        return set.sorted { $0.createdAt > $1.createdAt }
+    }
+    
     // 便捷属性和方法
     var titleString: String {
         title ?? "未知标题"

@@ -5,7 +5,6 @@ import CoreData
 enum MessageRole: String, Codable {
     case user
     case assistant
-    case system  // 添加这个case
 }
 
 // 消息模型

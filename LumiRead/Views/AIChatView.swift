@@ -1,20 +1,19 @@
 import SwiftUI
 import CoreData
 
-
 // --- Start Placeholder Models (Assume these are defined elsewhere globally) ---
-// struct Message: Identifiable, Equatable {
-//     let id: UUID
-//     var content: String
-//     let role: MessageRole
-//     let createdAt: Date
-// }
+struct Message: Identifiable, Equatable {
+    let id: UUID
+    var content: String
+    let role: MessageRole
+    let createdAt: Date
+}
 
-// enum MessageRole: String, Codable {
-//     case user
-//     case assistant
-//     case system
-// }
+enum MessageRole: String, Codable {
+    case user
+    case assistant
+    case system
+}
 // --- End Placeholder Models ---
 
 struct AIChatView: View {
@@ -152,12 +151,12 @@ struct AIChatView: View {
 
     private func sendMessageAction() {
         guard !isSendButtonDisabled else { return }
-        
+
         viewModel.sendMessage(
             article: article,
             userInput: userInput,
             selectedPromptIDs: Array(selectedPromptIDs),
-            viewContext: viewContext
+            viewContext: viewContext  // 修改参数名为 viewContext
         )
         userInput = ""
         selectedPromptIDs = []
@@ -175,16 +174,15 @@ struct AIChatView_Previews: PreviewProvider {
         mockArticle.id = UUID()
         mockArticle.title = "这是一个测试文章标题用于预览"
         mockArticle.content = "这是文章的内容..."
-        mockArticle.importDate = Date()
+        // 修改 mockArticle 的创建
+        mockArticle.createdAt = Date()  // 使用新添加的属性
+        mockArticle.summary = "这是文章的摘要..."
         
-        let prompt1 = PresetPrompt(context: viewContext)
-        prompt1.id = UUID()
-        prompt1.prompt = "请总结一下这篇文章的主要观点。"
+        // 修改 prompt1 和 prompt2 的创建
+        prompt1.prompt = "请总结一下这篇文章的主要观点。"  // 使用 prompt 而不是 content
         prompt1.createdAt = Date()
         
-        let prompt2 = PresetPrompt(context: viewContext)
-        prompt2.id = UUID()
-        prompt2.prompt = "这篇文章的主要论点是什么？"
+        prompt2.prompt = "这篇文章的主要论点是什么？"  // 使用 prompt 而不是 content
         prompt2.createdAt = Date()
         
         return Group {
