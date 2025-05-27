@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		D26908EE2DE4A3440007E086 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = D26908ED2DE4A3440007E086 /* GoogleSignIn */; };
-		D26908F12DE4ACFB0007E086 /* GoogleAPIClientForREST_Drive in Frameworks */ = {isa = PBXBuildFile; productRef = D26908F02DE4ACFB0007E086 /* GoogleAPIClientForREST_Drive */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		D26908A72DE420ED0007E086 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -57,8 +52,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D26908F12DE4ACFB0007E086 /* GoogleAPIClientForREST_Drive in Frameworks */,
-				D26908EE2DE4A3440007E086 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,7 +78,6 @@
 				D26908962DE420EB0007E086 /* LumiRead */,
 				D26908A92DE420ED0007E086 /* LumiReadTests */,
 				D26908B32DE420ED0007E086 /* LumiReadUITests */,
-				D26908E92DE4A2BA0007E086 /* Frameworks */,
 				D26908952DE420EB0007E086 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,13 +90,6 @@
 				D26908B02DE420ED0007E086 /* LumiReadUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		D26908E92DE4A2BA0007E086 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -127,8 +112,6 @@
 			);
 			name = LumiRead;
 			packageProductDependencies = (
-				D26908ED2DE4A3440007E086 /* GoogleSignIn */,
-				D26908F02DE4ACFB0007E086 /* GoogleAPIClientForREST_Drive */,
 			);
 			productName = LumiRead;
 			productReference = D26908942DE420EB0007E086 /* LumiRead.app */;
@@ -212,10 +195,6 @@
 			);
 			mainGroup = D269088B2DE420EB0007E086;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				D26908EC2DE4A3330007E086 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
-				D26908EF2DE4ACE10007E086 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D26908952DE420EB0007E086 /* Products */;
 			projectDirPath = "";
@@ -421,14 +400,11 @@
 				DEVELOPMENT_TEAM = 9HGR5HKLNN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = LumiRead;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.3.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -452,14 +428,11 @@
 				DEVELOPMENT_TEAM = 9HGR5HKLNN;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = LumiRead;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.3.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -585,38 +558,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D26908EC2DE4A3330007E086 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
-		D26908EF2DE4ACE10007E086 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/google/google-api-objectivec-client-for-rest.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D26908ED2DE4A3440007E086 /* GoogleSignIn */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D26908EC2DE4A3330007E086 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
-			productName = GoogleSignIn;
-		};
-		D26908F02DE4ACFB0007E086 /* GoogleAPIClientForREST_Drive */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D26908EF2DE4ACE10007E086 /* XCRemoteSwiftPackageReference "google-api-objectivec-client-for-rest" */;
-			productName = GoogleAPIClientForREST_Drive;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D269088C2DE420EB0007E086 /* Project object */;
 }

@@ -7,7 +7,6 @@ class PresetPrompt: NSManagedObject, Identifiable {
     @NSManaged public var content: String
     @NSManaged public var title: String
     @NSManaged public var order: Int16
-    @NSManaged public var createdAt: Date
     
     // 用于预览的示例数据
     static var preview: PresetPrompt {
