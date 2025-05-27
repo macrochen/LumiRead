@@ -4,8 +4,40 @@ struct ContentSummaryView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var appState: AppState
     
+    @State private var summary: BatchSummary? // 将 summary 声明为 @State 属性
+    @FetchRequest var articles: FetchedResults<Article> // 声明 @FetchRequest
+    
+    var onStartChat: ((Article) -> Void)?
+
+    // 无参数初始化方法，用于预览或不带总结的场景
+    init() {
+        _summary = State(initialValue: nil)
+        _articles = FetchRequest(sortDescriptors: []) // 为 @FetchRequest 提供一个默认的初始化
+    }
+    
+    // 添加接受 onStartChat 参数的初始化方法
+    init(onStartChat: ((Article) -> Void)? = nil) {
+        self.onStartChat = onStartChat
+        _summary = State(initialValue: nil)
+        _articles = FetchRequest(sortDescriptors: [])
+    }
+    
+    // 新增一个接受 BatchSummary 的初始化方法，用于从 MainTabView 传递数据
+    init(summary: BatchSummary, onStartChat: ((Article) -> Void)? = nil) {
+        self.onStartChat = onStartChat
+        _summary = State(initialValue: summary) // 通过 _summary 访问属性包装器
+        
+        let articleIDs = summary.articleIDs as? [UUID] ?? []
+        let predicate = NSPredicate(format: "id IN %@", articleIDs)
+        
+        _articles = FetchRequest(
+            sortDescriptors: [NSSortDescriptor(keyPath: \Article.title, ascending: true)],
+            predicate: predicate
+        )
+    }
+    
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \BatchSummary.creationDate, ascending: false)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \BatchSummary.createdAt, ascending: false)],
         animation: .default)
     private var summaries: FetchedResults<BatchSummary>
     

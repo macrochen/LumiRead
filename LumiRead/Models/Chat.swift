@@ -8,6 +8,11 @@ class Chat: NSManagedObject, Identifiable {
     @NSManaged public var article: Article?
     @NSManaged public var messages: NSSet?
     
+    // 添加 fetchRequest 静态方法
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Chat> {
+        return NSFetchRequest<Chat>(entityName: "Chat")
+    }
+    
     // 用于预览的示例数据
     static var preview: Chat {
         let context = PersistenceController.preview.container.viewContext

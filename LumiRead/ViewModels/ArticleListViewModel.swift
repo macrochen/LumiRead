@@ -86,11 +86,8 @@ class ArticleListViewModel: ObservableObject {
         isLoading = true
         
         // 获取选中的文章内容
-        // 修改为接收 articles 参数
-        // 获取选中的文章内容
         let selectedArticles = articles.filter { article in
-            guard let id = article.id else { return false }
-            return selectedArticleIDs.contains(id)
+            return selectedArticleIDs.contains(article.id)
         }
         
         // 获取用户设置的API Key和总结提示词

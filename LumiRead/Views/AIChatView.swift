@@ -21,99 +21,24 @@ struct AIChatView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var appState: AppState
     @StateObject private var viewModel = AIChatViewModel()
+    @Binding var activeChat: Chat?
 
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \PresetPrompt.createdAt, ascending: true)],
-        animation: .default)
-    private var presetPrompts: FetchedResults<PresetPrompt>
-
-    var body: some View {
-        VStack(spacing: 0) {
-            if let article = appState.currentArticleForChat {
-                ChatView(
-                    article: article,
-                    viewModel: viewModel,
-                    presetPrompts: presetPrompts
-                )
-            } else {
-                EmptyChatView()
-            }
-        }
-        .navigationTitle(appState.currentArticleForChat != nil ? "对话: \(appState.currentArticleForChat!.titleString.prefix(15))..." : "AI对话")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            if let article = appState.currentArticleForChat {
-                viewModel.loadChatHistory(for: article, context: viewContext)
-            }
-        }
-        .onChange(of: appState.currentArticleForChat) { newArticle in
-            if let article = newArticle {
-                viewModel.loadChatHistory(for: article, context: viewContext)
-            } else {
-                viewModel.messages = [] 
-            }
-        }
-    }
-}
-
-struct EmptyChatView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "bubble.left.and.bubble.right")
-                .font(.largeTitle)
-                .padding(.bottom)
-            Text("请从文章列表选择一篇文章开始对话。")
-                .font(.headline)
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(UIColor.systemGroupedBackground))
-    }
-}
-
-struct UserMessageBubble: View {
-    let message: Message
-
-    var body: some View {
-        HStack {
-            Spacer() 
-            Text(message.content)
-                .padding(10)
-                .background(Color.blue)
-                .foregroundColor(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-        }
-        .padding(.horizontal)
-    }
-}
-
-struct AIMessageBubble: View {
-    let message: Message
-
-    var body: some View {
-        HStack {
-            Text(message.content)
-                .padding(10)
-                .background(Color(UIColor.secondarySystemBackground)) 
-                .foregroundColor(.primary)
-                .clipShape(RoundedRectangle(cornerRadius: 15, style: .continuous))
-            Spacer() 
-        }
-        .padding(.horizontal)
-    }
-}
-
-struct ChatView: View {
     let article: Article
-    @ObservedObject var viewModel: AIChatViewModel
-    let presetPrompts: FetchedResults<PresetPrompt>
-    @Environment(\.managedObjectContext) private var viewContext
 
     @State private var userInput: String = ""
+    @State private var showPresetPrompts: Bool = true
     @State private var selectedPromptIDs: Set<UUID> = []
-    @State private var showPresetPrompts = true
+
+    @FetchRequest(entity: PresetPrompt.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \PresetPrompt.createdAt, ascending: true)])
+    private var presetPrompts: FetchedResults<PresetPrompt>
+
+    init(article: Article, activeChat: Binding<Chat?>) {
+        self.article = article
+        self._activeChat = activeChat
+    }
 
     private var isSendButtonDisabled: Bool {
+        viewModel.isLoading ||
         userInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && selectedPromptIDs.isEmpty
     }
 
@@ -127,16 +52,16 @@ struct ChatView: View {
                                 .padding(.top)
                         } else {
                             ForEach(viewModel.messages) { message in
-                                if message.role == .user {
+                                if message.role == MessageRole.user.rawValue {
                                     UserMessageBubble(message: message)
-                                } else {
+                                } else if message.role == MessageRole.assistant.rawValue {
                                     AIMessageBubble(message: message)
                                 }
                             }
                         }
                     }
                     .padding(.vertical)
-                    .onChange(of: viewModel.messages.count) { oldValue, newValue in
+                    .onChange(of: viewModel.messages.count) { _ in // Updated onChange syntax
                         if let lastMessageID = viewModel.messages.last?.id {
                             withAnimation {
                                 scrollViewProxy.scrollTo(lastMessageID, anchor: .bottom)
@@ -173,7 +98,7 @@ struct ChatView: View {
                                         }
                                     }
                                 }) {
-                                    Text(prompt.title ?? "Prompt")
+                                    Text(prompt.title ?? "Prompt") // Changed prompt.prompt to prompt.title
                                         .font(.caption)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 6)
@@ -216,6 +141,13 @@ struct ChatView: View {
             .background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.bottom))
         }
         .background(Color(UIColor.systemGroupedBackground).edgesIgnoringSafeArea(.all))
+        .onChange(of: activeChat) { newChat in // Updated onChange syntax
+            if let chat = newChat {
+                viewModel.loadChatHistory(for: chat)
+            } else {
+                viewModel.messages = [] // Clear messages if no active chat
+            }
+        }
     }
 
     private func sendMessageAction() {
@@ -225,7 +157,7 @@ struct ChatView: View {
             article: article,
             userInput: userInput,
             selectedPromptIDs: Array(selectedPromptIDs),
-            viewContext: viewContext  // 修改参数名为 viewContext
+            viewContext: viewContext
         )
         userInput = ""
         selectedPromptIDs = []
@@ -243,29 +175,45 @@ struct AIChatView_Previews: PreviewProvider {
         mockArticle.id = UUID()
         mockArticle.title = "这是一个测试文章标题用于预览"
         mockArticle.content = "这是文章的内容..."
-        // 修改 mockArticle 的创建
-        mockArticle.createdAt = Date()  // 使用新添加的属性
-        mockArticle.summary = "这是文章的摘要..."
+        mockArticle.importDate = Date()
         
-        // 修改 prompt1 和 prompt2 的创建
-        prompt1.prompt = "请总结一下这篇文章的主要观点。"  // 使用 prompt 而不是 content
+        let prompt1 = PresetPrompt(context: viewContext)
+        prompt1.id = UUID()
+        prompt1.prompt = "请总结一下这篇文章的主要观点。"
         prompt1.createdAt = Date()
         
-        prompt2.prompt = "这篇文章的主要论点是什么？"  // 使用 prompt 而不是 content
+        let prompt2 = PresetPrompt(context: viewContext)
+        prompt2.id = UUID()
+        prompt2.prompt = "这篇文章的主要论点是什么？"
         prompt2.createdAt = Date()
         
         return Group {
             NavigationView { // Embed in NavigationView for preview
-                AIChatView()
+                AIChatView(article: mockArticle, activeChat: .constant(nil))
             }
             .environmentObject(appState)
             .environment(\.managedObjectContext, viewContext)
             .previewDisplayName("AIChatView (No Article)")
             
             NavigationView { // Embed in NavigationView for preview
-                AIChatView()
+                AIChatView(article: mockArticle, activeChat: .constant(nil))
                     .onAppear {
-                        appState.currentArticleForChat = mockArticle
+                        // Add some mock messages for preview if needed
+                        let msg1 = Message(context: viewContext)
+                        msg1.id = UUID()
+                        msg1.content = "用户：你好，能帮我分析一下这篇文章吗？"
+                        msg1.role = MessageRole.user.rawValue
+                        msg1.createdAt = Date()
+
+                        let msg2 = Message(context: viewContext)
+                        msg2.id = UUID()
+                        msg2.content = "AI：当然，这篇文章主要讨论了..."
+                        msg2.role = MessageRole.assistant.rawValue
+                        msg2.createdAt = Date()
+                        
+                        // In a real scenario, you'd add these to a chat object and load via viewModel.loadChatHistory
+                        // For preview, we might directly manipulate viewModel.messages if it's a @StateObject
+                        // However, for a proper preview, it's better to simulate the data flow.
                     }
             }
             .environmentObject(appState)

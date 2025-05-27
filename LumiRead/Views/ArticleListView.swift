@@ -2,8 +2,14 @@ import SwiftUI
 
 struct ArticleListView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject private var appState: AppState
-    @StateObject private var viewModel = ArticleListViewModel(context: viewContext)
+    @StateObject private var viewModel: ArticleListViewModel
+    var onStartChat: ((Article) -> Void)?
+    
+    init(onStartChat: ((Article) -> Void)? = nil) {
+        self.onStartChat = onStartChat
+        // 使用构造函数初始化 viewModel
+        _viewModel = StateObject(wrappedValue: ArticleListViewModel(context: PersistenceController.shared.container.viewContext))
+    }
     
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \Article.importDate, ascending: false)],
@@ -89,6 +95,10 @@ struct ArticleListView: View {
                     dismissButton: .default(Text("确定"))
                 )
             }
+        }
+        .onAppear {
+            // 在onAppear中设置context
+            viewModel.setContext(viewContext)
         }
     }
 }

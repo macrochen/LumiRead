@@ -30,7 +30,7 @@ class AIService {
         ]
         
         guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
-            completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的URL"]))))
+            completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的URL"]))) // 移除多余的右括号
             return
         }
         
@@ -53,7 +53,7 @@ class AIService {
             }
             
             guard let data = data else {
-                completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "没有返回数据"]))))
+                completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "没有返回数据"]))) // 移除多余的右括号
                 return
             }
             
@@ -65,7 +65,7 @@ class AIService {
                    let content = message["content"] as? String {
                     completion(.success(content))
                 } else {
-                    completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析API响应"]))))
+                    completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析API响应"]))) // 移除多余的右括号
                 }
             } catch {
                 completion(.failure(error))
@@ -107,7 +107,7 @@ class AIService {
         ]
         
         guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
-            completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的URL"]))))
+            completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无效的URL"]))) // 移除多余的右括号
             return
         }
         
@@ -130,7 +130,7 @@ class AIService {
             }
             
             guard let data = data else {
-                completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "没有返回数据"]))))
+                completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "没有返回数据"]))) // 移除多余的右括号
                 return
             }
             
@@ -142,7 +142,7 @@ class AIService {
                    let content = message["content"] as? String {
                     completion(.success(content))
                 } else {
-                    completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析API响应"]))))
+                    completion(.failure(NSError(domain: "AIService", code: -1, userInfo: [NSLocalizedDescriptionKey: "无法解析API响应"]))) // 移除多余的右括号
                 }
             } catch {
                 completion(.failure(error))
